@@ -13,40 +13,40 @@
 1. **Spring 是开源的轻量级框架**
 
 2. **Spring 核心主要有两部分**
-- AOP：面向切面编程，扩展功能不是修改源代码实现
-- IOC：控制反转
+ - AOP：面向切面编程，扩展功能不是修改源代码实现
+ - IOC：控制反转
 
 3. **Spring 是一站式框架：Spring 在 javaee 三层结构中每层都提供不同的解决技术**
-- web 层：SpringMVC
-- service 层：Spring 的 IOC
-- DAO 层：Spring 的 JDBCTemplate
+ - web 层：SpringMVC
+ - service 层：Spring 的 IOC
+ - DAO 层：Spring 的 JDBCTemplate
 
 #### 1.2 Spring 的 IOC 操作 ####
 
 1. **IOC 底层原理使用技术**
-- XML 配置文件
-- dom4j
-- 工厂设计模式
-- 反射
+ - XML 配置文件
+ - dom4j
+ - 工厂设计模式
+ - 反射
 
 2. **IOC 入门**
-- 导入 jar 包
-- 创建 Spring 配置文件
+ - 导入 jar 包
+ - 创建 Spring 配置文件
      - 核心配置文件位置和名称不是固定的，建议放到 src 下面，官方建议名称为 applicationContext.xml
      - 引入 schema 约束
 
 #### 1.3 Spring 的 bean 管理（XML 方式） ####
 
 1. **准备工作**
-- 导入基本 jar 包
+ - 导入基本 jar 包
      - spring-beans-5.0.0.RELEASE.jar
      - spring-context-5.0.0.RELEASE.jar
      - spring-core-5.0.0.RELEASE.jar
      - spring-expression-5.0.0.RELEASE.jar
-- 导入提供日志记录功能 jar 包
+ - 导入提供日志记录功能 jar 包
      - commons-logging-1.2.jar
      - log4j-1.2.17.jar
-- 引入 schema 约束
+ - 引入 schema 约束
   ```
   <beans xmlns="http://www.springframework.org/schema/beans"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -54,25 +54,25 @@
   ```
 
 2. **bean 实例化的三种方式**
-- 使用类的无参构造方法
+ - 使用类的无参构造方法
  ```
    <bean id="person" class="com.nassu.bean.Person"></bean>
  ```
-- 使用静态工厂创建
+ - 使用静态工厂创建
  ```
    <bean id="personFactory" class="com.nassu.factory.PersonFactory" factory-method="getPerson"></bean>
  ```
-- 使用实例工厂创建
+ - 使用实例工厂创建
  ```
    <bean id="personFactory" class="com.nassu.factory.PersonFactory"></bean>
   <bean id="factory" factory-bean="personFactory" factory-method="getPerson"></bean>
  ```
 
 3. **bean 标签的常用属性**
-- id 属性：任意命名，不能包含特殊符号，根据 id 值得到对象
-- class 属性：创建对象所在的类全路径
-- name 属性：功能和 id 属性一样，但可以包含特殊符号（已被 id 属性取代）
-- scope 属性：bean 的作用范围
+ - id 属性：任意命名，不能包含特殊符号，根据 id 值得到对象
+ - class 属性：创建对象所在的类全路径
+ - name 属性：功能和 id 属性一样，但可以包含特殊符号（已被 id 属性取代）
+ - scope 属性：bean 的作用范围
      - singleton：单例（默认值）
      - prototype：多例
      - reqeust：创建对象并放入 request 域中
@@ -80,12 +80,12 @@
      - globalSession：创建对象并放入 globalSession 域中
 
 4. **属性注入的三种方式**
-- set 方法注入
-- 有参方法构造注入
-- 接口注入
+ - set 方法注入
+ - 有参方法构造注入
+ - 接口注入
 
 5. **Spring 中属性的注入**
-- Spring 支持前两种注入方式
+ - Spring 支持前两种注入方式
  ```
     <!-- 注入对象类型属性使用 ref 属性 -->
     <!-- set 方法注入  -->
@@ -100,7 +100,7 @@
     <constructor-arg index="1" value="male"></constructor-arg>
   </bean>
  ```
-- P 名称空间注入（基于 set 方法）
+ - P 名称空间注入（基于 set 方法）
  ```
     <beans xmlns="http://www.springframework.org/schema/beans"
   xmlns:p="http://www.springframework.org/schema/p"
@@ -110,7 +110,7 @@
     <bean id="person" class="com.nassu.bean.Person" p:name="nassu" p:gender="male4"></bean>
 </beans>
  ```
-- 复杂类型注入（基于 set 方法）
+ - 复杂类型注入（基于 set 方法）
  ```
   <bean id="person" class="com.nassu.bean.Person">
     <!-- 1. 数组 -->
@@ -152,9 +152,9 @@
 #### 2.1 Spring 的 bean 管理（注解方式） ####
 
 1. **准备工作**
-- 基本 jar 包和支持日志记录 jar 包（同 XML 方式）
-- 导入用于注解的 jar 包：spring-aop-5.0.0.RELEASE.jar
-- 引入 schema 约束
+ - 基本 jar 包和支持日志记录 jar 包（同 XML 方式）
+ - 导入用于注解的 jar 包：spring-aop-5.0.0.RELEASE.jar
+ - 引入 schema 约束
   ```
     <beans xmlns="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -166,7 +166,7 @@
   ```
 
 2. **配置注解**
-- 核心配置文件中
+ - 核心配置文件中
   ```
  <!-- 开启注解扫描（到包里面扫描类、方法、属性上面是否有注解） -->
   <context:component-scan base-package="com.nassu"></context:component-scan>
@@ -174,7 +174,7 @@
   <!-- 只扫描属性上面的注解 -->
   <context:annotation-config />
   ```
-- 实体类中
+ - 实体类中
  ```
  @Component(value = "person")
  @Scope(value = "prototype")
@@ -184,10 +184,10 @@
  ```
 
 3. **常用的四个用来实例化的注解**
-- @Component
-- @Controller：WEB 层
-- @Service： 业务层
-- @Repository：持久层
+ - @Component
+ - @Controller：WEB 层
+ - @Service： 业务层
+ - @Repository：持久层
 
  其他三个注解是 @Component 的三个衍生注解，目的是为了让标注类本身的用途更清晰。
 
@@ -232,38 +232,38 @@
 
 2. **AOP 原理**
  底层使用动态代理方式实现。
-- 使用 jdk 动态代理，针对有接口情况
-- 使用 cglib 动态代理，追对没有接口情况
+ - 使用 jdk 动态代理，针对有接口情况
+ - 使用 cglib 动态代理，追对没有接口情况
 
 3. **AOP 操作术语**
-- Joinpoint（连接点）：类里面可以被增强的方法
-- Pointcut（切入点）：实际增强的方法
-- Advice（通知/增强）：增强的逻辑
+ - Joinpoint（连接点）：类里面可以被增强的方法
+ - Pointcut（切入点）：实际增强的方法
+ - Advice（通知/增强）：增强的逻辑
      - 前置通知：在方法之前执行
      - 后置通知：在方法之后执行
      - 异常通知：方法出现异常后执行
      - 最终通知：在后置通知之后执行
      - 环绕通知：在方法前后都执行
-- Aspect（切面）：把增强的逻辑应用到具体方法上面的过程
+ - Aspect（切面）：把增强的逻辑应用到具体方法上面的过程
 
 #### 2.3 Spring 的 AOP 操作（XML 方式） ####
 
 1. **使用 aspectj 实现**
-- aspectj 不是 Spring 的一部分
-- Spring2.0 之后增加了对 aspectj 的支持
+ - aspectj 不是 Spring 的一部分
+ - Spring2.0 之后增加了对 aspectj 的支持
 
 2. **使用 aspectj 实现 AOP 有两种方式**
-- 基于 aspectj 的 xml 配置
-- 基于 aspectj 的注解
+ - 基于 aspectj 的 xml 配置
+ - 基于 aspectj 的注解
 
 3. **准备工作**
-- 基本 jar 包和支持日志记录 jar 包
-- 导入用于 AOP 操作的 jar 包：
+ - 基本 jar 包和支持日志记录 jar 包
+ - 导入用于 AOP 操作的 jar 包：
      - spring-aop-5.0.0.RELEASE.jar
      - spring-aspects-5.0.0.RELEASE.jar
      - aopalliance-1.0.jar
      - aspectjweaver.jar
-- 引入 schema 约束
+ - 引入 schema 约束
  ```
 <beans xmlns="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -276,12 +276,12 @@
 
 4. **通过 execution 函数定义切点方法**
 语法：execution(<访问修饰符>?<返回类型><方法名>(<参数>)<异常>)，常用表达式：
-- execution(* com.nassu.person.add(..))
-- execution(* com.nassu.Person.*(..))
-- execution(* *.*(..))
+ - execution(* com.nassu.person.add(..))
+ - execution(* com.nassu.Person.*(..))
+ - execution(* *.*(..))
 
 5. **配置文件和类中方法的书写**
-- 配置文件
+ - 配置文件
  ```
  <!-- 配置对象 -->
   <bean id="person" class="com.nassu.bean.Person"></bean>
@@ -304,7 +304,7 @@
   </aop:config>
  ```
 
-- 增强方法
+ - 增强方法
  ```
  public void before() {
     System.out.println("前置通知......");
@@ -469,8 +469,8 @@
 #### 3.3 Spring 的事务管理 API ####
 
 1. **Spring 事务管理的两种方式**
-- 编程式事务管理（不用）
-- 声明式事务管理
+ - 编程式事务管理（不用）
+ - 声明式事务管理
      - 基于 XML 配置文件实现
      - 基于注解实现
 
@@ -501,19 +501,19 @@ PlatFormTransactionManager：针对不同的 DAO 层框架提供不同的实现�
   ```
 
 4. **声明式事务管理（注解方式）**
-- 配置事务管理器
+ - 配置事务管理器
  ```
  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
       <!-- 注入 dataSource -->
       <property name="dataSource" ref="dataSource" />
 </bean>
  ```
-- 开启事务注解
+ - 开启事务注解
  ```
  <!-- 开启事务注解 -->
   <tx:annotation-driven transaction-manager="transactionManager" />
  ```
-- 在要开启事务的方法的类上添加注解
+ - 在要开启事务的方法的类上添加注解
  ```
  @Transactional
  public class Service {
