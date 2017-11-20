@@ -246,7 +246,7 @@
      - 环绕通知：在方法前后都执行
 - Aspect（切面）：把增强的逻辑应用到具体方法上面的过程
 
-#### 2.3 Spring 的 AOP 操作 ####
+#### 2.3 Spring 的 AOP 操作（XML 方式） ####
 
 1. **使用 aspectj 实现**
 - aspectj 不是 Spring 的一部分
@@ -321,10 +321,202 @@
   }
  ```
 
- #### 2.4 log4j 介绍 ####
+#### 2.4 log4j 介绍 ####
 
- 1. **通过 log4j 可以看到程序运行过程中更详细的信息**
+1. **通过 log4j 可以看到程序运行过程中更详细的信息**
 
- 2. **引入方式**
+2. **引入方式**
  - 导入 log4j 的 jar 包
  - 在 src 下创建配置文件
+
+#### 2.5 服务器启动时加载配置文件 ####
+
+1. 导入 jar 包：spring-web-5.0.0.RELEASE.jar
+2. 在 web.xml 中进行配置
+ ```
+ <!-- 指定 Spirng 配置文件的位置（如果名称为 applicationContext.xml,则不用配置） -->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:applicationContext.xml</param-value>
+  </context-param>
+
+  <!-- 配置监听器 -->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+ ```
+
+### 3. 第三天 ###
+
+#### 3.1 Spring 的 AOP 操作（注解方式） ####
+
+1. **核心配置文件中配置**
+ ```
+ <!-- 开启AOP操作 -->
+  <aop:aspectj-autoproxy />
+
+  <!-- 配置对象 -->
+  <bean id="person" class="com.nassu.bean.Person"></bean>
+  <bean id="book" class="com.nassu.bean.Book"></bean>
+ ```
+
+2. **增强方法上的注解**
+ ```
+ @Before(value = "execution(* com.nassu.bean.Person.method())")
+  public void before() {
+    System.out.println("前置通知......");
+  }
+
+  @AfterReturning(value = "execution(* com.nassu.bean.Person.method())")
+  public void after() {
+    System.out.println("后置通知......");
+  }
+
+  @Around(value = "execution(* com.nassu.bean.Person.method())")
+  public void around(ProceedingJoinPoint pjp) throws Throwable {
+    System.out.println("before...");
+    pjp.proceed();
+    System.out.println("after...");
+  }
+ ```
+
+#### 3.2 Spring 的 jdbcTemplate 操作 ####
+
+1. **准备工作**
+ 导入 jar 包
+ - spring-jdbc-5.0.0.RELEASE.jar
+ - spring-tx-5.0.0.RELEASE.jar
+ - mysql-connector-java-5.1.42-bin.jar
+
+2. **CRUD 操作**
+ 1. CUD 操作
+  ```
+  public void cud() {
+    //1. 设置数据库信息
+    DriverManagerDataSource dataSource = new DriverManagerDataSource();
+    dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+    dataSource.setUrl("jdbc:mysql://localhost:3306/spring?useSSL=true");
+    dataSource.setUsername("root");
+    dataSource.setPassword("123456");
+
+    //2. 创建 JdbcTemplate 对象
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+
+    //3. 进行CUD操作
+    //3.1 create
+    Object[] objects1 = {"小明", 101};
+    String sql1 = "insert into person(name, age) values(?, ?)";
+    jdbcTemplate.update(sql1, objects1);
+
+    //3.2 update
+    Object[] objects2 = {10, "小明"};
+    String sql2 = "update person set age=? where name=?";
+    jdbcTemplate.update(sql2, objects2);
+
+    //3.3 delete
+    Object[] objects3 = {"小明"};
+    String sql3 = "delete from person where name=?";
+    jdbcTemplate.update(sql3, objects3);
+  }
+  ```
+ 2. Retrieve 操作
+  ```
+  public void Retrieve() {
+    //1. 设置数据库信息
+    DriverManagerDataSource dataSource = new DriverManagerDataSource();
+    dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+    dataSource.setUrl("jdbc:mysql://localhost:3306/spring?useSSL=true");
+    dataSource.setUsername("root");
+    dataSource.setPassword("123456");
+
+    //2. 创建 JdbcTemplate 对象
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+
+    //3. 进行 Retrieve 操作
+    //3.1 查询返回某一个值
+    String sql1 = "select count(*) from person";
+    int count = jdbcTemplate.queryForObject(sql1, Integer.class);
+    System.out.println(count);
+
+    //3.2 查询返回对象
+    String sql2 = "select * from person where id=?";
+    Person person = jdbcTemplate.queryForObject(sql2, new RowMapper<Person>() {
+      public Person mapRow(ResultSet rs, int rowNum) throws SQLException {
+        Person person = new Person();
+        person.setId(rs.getInt(1));
+        person.setName(rs.getString(2));
+        person.setAge(rs.getInt(3));
+        return person;
+      }
+    }, 4);
+    System.out.println(person);
+
+    //3.3 查询返回 list 集合
+    String sql3 = "select * from person";
+    List<Person> list = jdbcTemplate.query(sql3, new RowMapper<Person>() {
+      public Person mapRow(ResultSet rs, int rowNum) throws SQLException {
+        Person person = new Person();
+        person.setId(rs.getInt(1));
+        person.setName(rs.getString(2));
+        person.setAge(rs.getInt(3));
+        return person;
+      }
+    });
+    System.out.println(list);
+  }
+  ```
+
+#### 3.3 Spring 的事务管理 API ####
+
+1. **Spring 事务管理的两种方式**
+- 编程式事务管理（不用）
+- 声明式事务管理
+     - 基于 XML 配置文件实现
+     - 基于注解实现
+
+2. **Spring 事务管理 API 介绍**
+PlatFormTransactionManager：针对不同的 DAO 层框架提供不同的实现类
+
+3. **声明式事务管理（XML 方式）**
+  ```
+  <!-- 1. 配置事务管理器 -->
+<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+      <!-- 注入 dataSource -->
+      <property name="dataSource" ref="dataSource" />
+  </bean>
+
+  <!-- 2. 配置事务增强 -->
+  <tx:advice id="txAdvice" transaction-manager="transactionManager">
+      <tx:attributes>
+        <!-- 设置进行事务操作的方法名 -->
+        <tx:method name="transfer" />
+      </tx:attributes>
+  </tx:advice>
+
+  <!-- 3. 配置切面 -->
+  <aop:config>
+      <aop:pointcut expression="execution(* com.nassu.service.MoneyService.*(..))" id="pointcut" />
+      <aop:advisor advice-ref="txAdvice" pointcut-ref="pointcut" />
+  </aop:config>
+  ```
+
+4. **声明式事务管理（注解方式）**
+- 配置事务管理器
+ ```
+ <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+      <!-- 注入 dataSource -->
+      <property name="dataSource" ref="dataSource" />
+</bean>
+ ```
+- 开启事务注解
+ ```
+ <!-- 开启事务注解 -->
+  <tx:annotation-driven transaction-manager="transactionManager" />
+ ```
+- 在要开启事务的方法的类上添加注解
+ ```
+ @Transactional
+ public class Service {
+        //...
+ }
+ ```
